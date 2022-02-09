@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/akazwz/gin/global"
 	"github.com/akazwz/gin/initialize"
+	"github.com/gin-gonic/gin"
 
 	"database/sql"
 	"log"
@@ -11,11 +12,13 @@ import (
 )
 
 func main() {
-	/* 初始化配置 */
-	global.VP = initialize.InitViper()
+	if gin.Mode() == "debug" {
+		/* 初始化配置 */
+		global.VP = initialize.InitViper()
 
-	if global.VP == nil {
-		log.Println("初始化配置失败")
+		if global.VP == nil {
+			log.Println("初始化配置失败")
+		}
 	}
 
 	/* 初始化数据库  */
@@ -41,7 +44,7 @@ func main() {
 	/* 端口地址 */
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8000"
+		port = "8080"
 	}
 
 	s := &http.Server{

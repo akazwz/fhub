@@ -4,19 +4,16 @@ import (
 	"database/sql"
 	"github.com/akazwz/gin/global"
 	"github.com/akazwz/gin/initialize"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 )
 
 func main() {
-	if gin.Mode() == "debug" {
-		global.VP = initialize.InitViper()
+	global.VP = initialize.InitViper()
 
-		if global.VP == nil {
-			log.Println("初始化配置失败")
-		}
+	if global.VP == nil {
+		log.Println("初始化配置失败")
 	}
 
 	global.DB = initialize.InitDB()

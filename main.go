@@ -1,19 +1,14 @@
 package main
 
 import (
-	"github.com/akazwz/gin/global"
 	"github.com/akazwz/gin/initialize"
-	"github.com/gin-gonic/gin"
-
-	"database/sql"
 	"log"
 	"net/http"
 	"os"
 )
 
 func main() {
-	if gin.Mode() == "debug" {
-		/* 初始化配置 */
+	/*if gin.Mode() == "debug" {
 		global.VP = initialize.InitViper()
 
 		if global.VP == nil {
@@ -21,14 +16,11 @@ func main() {
 		}
 	}
 
-	/* 初始化数据库  */
 	global.DB = initialize.InitDB()
 
 	if global.DB != nil {
-		/* 建表 */
 		initialize.CreateTables(global.DB)
 		db, _ := global.DB.DB()
-		/* 关闭数据库连接 */
 		defer func(db *sql.DB) {
 			err := db.Close()
 			if err != nil {
@@ -37,7 +29,7 @@ func main() {
 		}(db)
 	} else {
 		log.Println("数据库连接失败")
-	}
+	}*/
 
 	routers := initialize.Routers()
 

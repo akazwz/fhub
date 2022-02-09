@@ -45,7 +45,7 @@ func main() {
 	}
 
 	s := &http.Server{
-		Addr:    port,
+		Addr:    ":" + port,
 		Handler: routers,
 	}
 

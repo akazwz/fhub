@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"github.com/akazwz/gin/global"
 	"github.com/akazwz/gin/initialize"
 	"log"
 	"net/http"
@@ -14,7 +16,7 @@ func main() {
 		if global.VP == nil {
 			log.Println("初始化配置失败")
 		}
-	}
+	}*/
 
 	global.DB = initialize.InitDB()
 
@@ -29,7 +31,7 @@ func main() {
 		}(db)
 	} else {
 		log.Println("数据库连接失败")
-	}*/
+	}
 
 	routers := initialize.Routers()
 

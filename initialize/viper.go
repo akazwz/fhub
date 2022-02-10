@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"fmt"
+
 	"github.com/akazwz/gin/global"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"

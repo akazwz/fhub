@@ -1,10 +1,11 @@
 package initialize
 
 import (
+	"net/http"
+
 	"github.com/akazwz/gin/model/response"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // Routers 路由

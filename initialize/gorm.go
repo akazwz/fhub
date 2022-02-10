@@ -2,11 +2,12 @@ package initialize
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/akazwz/gin/global"
+	"github.com/akazwz/gin/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
-	"os"
 )
 
 // InitDB  初始化数据库
@@ -41,18 +42,22 @@ func InitDB() *gorm.DB {
 		dbName,
 	)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		/* 数据库连接失败 */
+	if db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
 		return nil
+	} else {
+		//sqlDB, _ := db.DB()
+		//sqlDB.SetMaxIdleConns()
+		//sqlDB.SetMaxIdleConns()
+		return db
 	}
-	return db
 }
 
 // CreateTables 数据库表迁移
 func CreateTables(db *gorm.DB) {
-	err := db.AutoMigrate()
+	err := db.AutoMigrate(
+		model.User{},
+	)
 	if err != nil {
-		log.Fatal("数据库建表失败")
+		os.Exit(0)
 	}
 }

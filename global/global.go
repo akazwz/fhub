@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	DB   *gorm.DB
+	GDB  *gorm.DB
 	VP   *viper.Viper
 	CONF config.Config
 )

@@ -2,11 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"github.com/akazwz/gin/global"
-	"github.com/akazwz/gin/initialize"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/akazwz/gin/global"
+	"github.com/akazwz/gin/initialize"
 )
 
 func main() {
@@ -16,11 +17,11 @@ func main() {
 		log.Println("初始化配置失败")
 	}
 
-	global.DB = initialize.InitDB()
+	global.GDB = initialize.InitDB()
 
-	if global.DB != nil {
-		initialize.CreateTables(global.DB)
-		db, _ := global.DB.DB()
+	if global.GDB != nil {
+		initialize.CreateTables(global.GDB)
+		db, _ := global.GDB.DB()
 		defer func(db *sql.DB) {
 			err := db.Close()
 			if err != nil {
@@ -29,6 +30,7 @@ func main() {
 		}(db)
 	} else {
 		log.Println("数据库连接失败")
+		return
 	}
 
 	routers := initialize.Routers()

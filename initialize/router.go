@@ -4,16 +4,17 @@ import (
 	"net/http"
 
 	"github.com/akazwz/gin/model/response"
+	"github.com/akazwz/gin/router"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 // Routers 路由
 func Routers() *gin.Engine {
-	router := gin.Default()
+	r := gin.Default()
 
 	/* cors 使用跨域中间件 */
-	router.Use(cors.New(cors.Config{
+	r.Use(cors.New(cors.Config{
 		AllowCredentials: true,
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"*"},
@@ -21,10 +22,10 @@ func Routers() *gin.Engine {
 	}))
 
 	/* 404 路由不存在 */
-	router.NoRoute(response.NotFound)
+	r.NoRoute(response.NotFound)
 
 	//Teapot  418
-	router.GET("teapot", func(c *gin.Context) {
+	r.GET("teapot", func(c *gin.Context) {
 		c.JSON(http.StatusTeapot, gin.H{
 			"message": "I'm a teapot",
 			"story": "This code was defined in 1998 " +
@@ -35,5 +36,11 @@ func Routers() *gin.Engine {
 		})
 	})
 
-	return router
+	publicRouterV1 := r.Group("v1")
+	{
+		/* public 路由 */
+		router.InitPublicRouter(publicRouterV1)
+	}
+
+	return r
 }

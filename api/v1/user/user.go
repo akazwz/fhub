@@ -24,7 +24,7 @@ func CreateUserByUsernamePwd(c *gin.Context) {
 	err = service.RegisterByUsernamePwdService(register)
 	if err != nil {
 		log.Println("create user error")
-		response.BadRequest(v1.CodeCreateUserError, "注册失败", c)
+		response.BadRequest(v1.CodeErrorCreateUser, "注册失败", c)
 		return
 	}
 	/* 注册成功， 返回用户名 */

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -38,14 +39,17 @@ func NewJWT() *JWT {
 // NewToken 生成token
 func (j *JWT) NewToken(claims model.MyCustomClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SigningString()
+	return token.SignedString(j.SigningKey)
 }
 
 // ParseToken 解析token
 func (j *JWT) ParseToken(tokenStr string) (*model.MyCustomClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenStr, &model.MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &model.MyCustomClaims{}, func(token *jwt.Token) (i interface{}, e error) {
 		return j.SigningKey, nil
 	})
+
+	log.Println(token)
+	log.Println(err)
 
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
@@ -90,6 +94,8 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
+		log.Println(token)
 
 		j := NewJWT()
 		claims, err := j.ParseToken(token)

@@ -1,6 +1,7 @@
 package initialize
 
 import (
+	"github.com/akazwz/gin/middleware"
 	"net/http"
 
 	"github.com/akazwz/gin/model/response"
@@ -40,6 +41,12 @@ func Routers() *gin.Engine {
 	{
 		/* public 路由 */
 		router.InitPublicRouter(publicRouterV1)
+	}
+
+	privateGroupV1 := r.Group("v1")
+	privateGroupV1.Use(middleware.JWTAuth())
+	{
+		router.InitUserRouter(privateGroupV1)
 	}
 
 	return r

@@ -35,3 +35,8 @@ func LoginByUsernamePwdService(u request.LoginByUsernamePwd) (err error, userIns
 	}
 	return err, &user
 }
+
+func GetUserProfileByUID(uid string) (err error, userInst model.User) {
+	err = global.GDB.Where("uid = ?", uid).First(&userInst).Error
+	return
+}

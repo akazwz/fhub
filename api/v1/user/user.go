@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/akazwz/gin/model"
 	"log"
 
 	"github.com/akazwz/gin/api/v1"
@@ -30,4 +31,26 @@ func CreateUserByUsernamePwd(c *gin.Context) {
 	/* 注册成功， 返回用户名 */
 	userRes := response.UserResponseCreatedByUsernamePwd{Username: register.Username}
 	response.Created(v1.CodeSuccessCreateUser, userRes, "注册成功", c)
+}
+
+func GetUserProfileByToken(c *gin.Context) {
+	claims, _ := c.Get("claims")
+	customClaims := claims.(*model.MyCustomClaims)
+	userUID := customClaims.UID
+
+	err, user := service.GetUserProfileByUID(userUID.String())
+	if err != nil {
+		response.BadRequest(v1.CodeErrorNoSuchUser, "没有此用户", c)
+		return
+	}
+	userRes := response.UserResponseProfile{
+		Username:  user.Username,
+		Email:     user.Email,
+		Phone:     user.Phone,
+		Role:      user.Role,
+		Gender:    user.Gender,
+		Avatar:    user.Avatar,
+		CreatedAt: user.CreatedAt,
+	}
+	response.Ok(v1.CodeSuccessGetUserProfile, userRes, "获取用户资料成功", c)
 }

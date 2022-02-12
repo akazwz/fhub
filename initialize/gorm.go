@@ -56,6 +56,8 @@ func InitDB() *gorm.DB {
 func CreateTables(db *gorm.DB) {
 	err := db.AutoMigrate(
 		model.User{},
+		model.File{},
+		model.FileURI{},
 	)
 	if err != nil {
 		os.Exit(0)

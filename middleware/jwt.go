@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"log"
 	"os"
 	"strconv"
 	"time"
@@ -48,9 +47,6 @@ func (j *JWT) ParseToken(tokenStr string) (*model.MyCustomClaims, error) {
 		return j.SigningKey, nil
 	})
 
-	log.Println(token)
-	log.Println(err)
-
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
@@ -94,8 +90,6 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
-		log.Println(token)
 
 		j := NewJWT()
 		claims, err := j.ParseToken(token)

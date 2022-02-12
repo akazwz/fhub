@@ -18,7 +18,6 @@ type User struct {
 	Avatar    string    `json:"avatar" gorm:"comment:头像;"`
 	CreatedAt int       `json:"created_at" gorm:"autoCreateTime:nano;"`
 	UpdatedAt int       `json:"updated_at" gorm:"autoUpdateTime:nano;"`
-	File      []File    `gorm:"foreignKey:UID"`
 }
 
 func (u User) TableName() string {

@@ -1,9 +1,9 @@
 package initialize
 
 import (
-	"github.com/akazwz/gin/middleware"
 	"net/http"
 
+	"github.com/akazwz/gin/middleware"
 	"github.com/akazwz/gin/model/response"
 	"github.com/akazwz/gin/router"
 	"github.com/gin-contrib/cors"
@@ -47,6 +47,7 @@ func Routers() *gin.Engine {
 	privateGroupV1.Use(middleware.JWTAuth())
 	{
 		router.InitUserRouter(privateGroupV1)
+		router.InitFileRouter(privateGroupV1)
 	}
 
 	return r

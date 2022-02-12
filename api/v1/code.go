@@ -4,6 +4,7 @@ const (
 	CodeSuccessCreateUser     = 2001
 	CodeSuccessLogin          = 2002
 	CodeSuccessGetUserProfile = 2003
+	CodeSuccessCreateFile     = 2004
 )
 
 const (
@@ -12,4 +13,5 @@ const (
 	CodeErrorLogin       = 4003
 	CodeErrorCreateToken = 4004
 	CodeErrorNoSuchUser  = 4005
+	CodeErrorCreatFile   = 4006
 )

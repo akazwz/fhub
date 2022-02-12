@@ -7,4 +7,5 @@ import (
 
 func InitFileRouter(routerGroup *gin.RouterGroup) {
 	routerGroup.POST("/file", v1.CreateFile)
+	routerGroup.GET("/file/uptoken", v1.GetUploadFileToken)
 }

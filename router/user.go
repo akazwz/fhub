@@ -6,5 +6,5 @@ import (
 )
 
 func InitUserRouter(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/user/profile", v1.GetUserProfileByToken)
+	routerGroup.GET("/user/profile", v1.GetUserProfileByToken)
 }

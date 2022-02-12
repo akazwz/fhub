@@ -1,11 +1,16 @@
 package v1
 
 import (
+	"os"
+
+	"github.com/akazwz/gin/global"
 	"github.com/akazwz/gin/model"
 	"github.com/akazwz/gin/model/request"
 	"github.com/akazwz/gin/model/response"
 	"github.com/akazwz/gin/service"
 	"github.com/gin-gonic/gin"
+	"github.com/qiniu/go-sdk/v7/auth/qbox"
+	"github.com/qiniu/go-sdk/v7/storage"
 )
 
 func CreateFile(c *gin.Context) {
@@ -33,4 +38,31 @@ func CreateFile(c *gin.Context) {
 		return
 	}
 	response.Created(CodeSuccessCreateFile, nil, "上传成功", c)
+}
+
+func GetUploadFileToken(c *gin.Context) {
+	accessKey := global.CONF.Qiniu.AccessKey
+	if len(os.Getenv("QAK")) > 0 {
+		accessKey = os.Getenv("QAK")
+	}
+
+	secretKey := global.CONF.Qiniu.SecretKey
+	if len(os.Getenv("QSK")) > 0 {
+		accessKey = os.Getenv("QSK")
+	}
+
+	mac := qbox.NewMac(accessKey, secretKey)
+	bucket := "akazwz"
+	putPolicy := storage.PutPolicy{
+		Scope: bucket,
+	}
+	upToken := putPolicy.UploadToken(mac)
+
+	type TokenUpload struct {
+		Token string `json:"token"`
+	}
+
+	response.Ok(CodeSuccessCreateUploadToken, TokenUpload{
+		Token: upToken,
+	}, "获取成功", c)
 }

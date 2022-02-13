@@ -48,7 +48,7 @@ func GetUploadFileToken(c *gin.Context) {
 
 	secretKey := global.CONF.Qiniu.SecretKey
 	if len(os.Getenv("QSK")) > 0 {
-		accessKey = os.Getenv("QSK")
+		secretKey = os.Getenv("QSK")
 	}
 
 	mac := qbox.NewMac(accessKey, secretKey)

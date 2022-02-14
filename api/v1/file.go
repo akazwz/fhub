@@ -13,6 +13,35 @@ import (
 	"github.com/qiniu/go-sdk/v7/storage"
 )
 
+// GetUploadFileToken 获取文件上传token(qiniu)
+func GetUploadFileToken(c *gin.Context) {
+	accessKey := global.CONF.Qiniu.AccessKey
+	if len(os.Getenv("QAK")) > 0 {
+		accessKey = os.Getenv("QAK")
+	}
+
+	secretKey := global.CONF.Qiniu.SecretKey
+	if len(os.Getenv("QSK")) > 0 {
+		secretKey = os.Getenv("QSK")
+	}
+
+	mac := qbox.NewMac(accessKey, secretKey)
+	bucket := "akazwz"
+	putPolicy := storage.PutPolicy{
+		Scope: bucket,
+	}
+	upToken := putPolicy.UploadToken(mac)
+
+	type TokenUpload struct {
+		Token string `json:"token"`
+	}
+
+	response.Ok(CodeSuccessCreateUploadToken, TokenUpload{
+		Token: upToken,
+	}, "获取成功", c)
+}
+
+// CreateFile 保存文件信息到数据库
 func CreateFile(c *gin.Context) {
 	/* get uid */
 	claims, _ := c.Get("claims")
@@ -40,29 +69,26 @@ func CreateFile(c *gin.Context) {
 	response.Created(CodeSuccessCreateFile, nil, "上传成功", c)
 }
 
-func GetUploadFileToken(c *gin.Context) {
-	accessKey := global.CONF.Qiniu.AccessKey
-	if len(os.Getenv("QAK")) > 0 {
-		accessKey = os.Getenv("QAK")
+// GetFileList 获取文件列表
+func GetFileList(c *gin.Context) {
+	/* get uid */
+	claims, _ := c.Get("claims")
+	customClaims := claims.(*model.MyCustomClaims)
+	userUID := customClaims.UID
+
+	/* 获取文件路径前缀 */
+	prefixDir := c.Query("prefix_dir")
+
+	if len(prefixDir) < 1 {
+		response.BadRequest(CodeErrorParams, "参数错误", c)
+		return
 	}
 
-	secretKey := global.CONF.Qiniu.SecretKey
-	if len(os.Getenv("QSK")) > 0 {
-		secretKey = os.Getenv("QSK")
+	err, fileList := service.GetFileListService(userUID, prefixDir)
+	if err != nil {
+		response.BadRequest(CodeErrorGetFileList, "获取文件列表失败", c)
+		return
 	}
 
-	mac := qbox.NewMac(accessKey, secretKey)
-	bucket := "akazwz"
-	putPolicy := storage.PutPolicy{
-		Scope: bucket,
-	}
-	upToken := putPolicy.UploadToken(mac)
-
-	type TokenUpload struct {
-		Token string `json:"token"`
-	}
-
-	response.Ok(CodeSuccessCreateUploadToken, TokenUpload{
-		Token: upToken,
-	}, "获取成功", c)
+	response.Ok(CodeSuccessGetFileList, fileList, "获取成功", c)
 }

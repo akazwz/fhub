@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// UploadFileService 保存文件信息到数据库
 func UploadFileService(uploadFile request.UploadFile, uid uuid.UUID) (err error) {
 	fileUri := model.FileURI{
 		SHA256: uploadFile.Sha256,
@@ -36,5 +37,11 @@ func UploadFileService(uploadFile request.UploadFile, uid uuid.UUID) (err error)
 		}
 		return nil
 	})
+	return
+}
+
+// GetFileListService 根据文件前缀和uid获取文件列表
+func GetFileListService(uid uuid.UUID, prefixDir string) (err error, fileList []model.File) {
+	err = global.GDB.Where("uid = ? AND prefix_dir = ?", uid, prefixDir).Find(&fileList).Error
 	return
 }

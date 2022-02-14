@@ -6,6 +6,7 @@ const (
 	CodeSuccessGetUserProfile    = 2003
 	CodeSuccessCreateFile        = 2004
 	CodeSuccessCreateUploadToken = 2005
+	CodeSuccessGetFileList       = 2006
 )
 
 const (
@@ -15,4 +16,6 @@ const (
 	CodeErrorCreateToken = 4004
 	CodeErrorNoSuchUser  = 4005
 	CodeErrorCreatFile   = 4006
+	CodeErrorParams      = 4007
+	CodeErrorGetFileList = 4008
 )

@@ -7,15 +7,17 @@ const (
 	CodeSuccessCreateFile        = 2004
 	CodeSuccessCreateUploadToken = 2005
 	CodeSuccessGetFileList       = 2006
+	CodeSuccessCreateFolder      = 2007
 )
 
 const (
-	CodeErrorBindJson    = 4001
-	CodeErrorCreateUser  = 4002
-	CodeErrorLogin       = 4003
-	CodeErrorCreateToken = 4004
-	CodeErrorNoSuchUser  = 4005
-	CodeErrorCreatFile   = 4006
-	CodeErrorParams      = 4007
-	CodeErrorGetFileList = 4008
+	CodeErrorBindJson     = 4001
+	CodeErrorCreateUser   = 4002
+	CodeErrorLogin        = 4003
+	CodeErrorCreateToken  = 4004
+	CodeErrorNoSuchUser   = 4005
+	CodeErrorCreatFile    = 4006
+	CodeErrorParams       = 4007
+	CodeErrorGetFileList  = 4008
+	CodeErrorCreateFolder = 4009
 )

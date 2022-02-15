@@ -41,7 +41,7 @@ func GetUploadFileToken(c *gin.Context) {
 	}, "获取成功", c)
 }
 
-// CreateFile 保存文件信息到数据库
+// CreateFile 上传文件
 func CreateFile(c *gin.Context) {
 	/* get uid */
 	claims, _ := c.Get("claims")
@@ -67,6 +67,29 @@ func CreateFile(c *gin.Context) {
 		return
 	}
 	response.Created(CodeSuccessCreateFile, nil, "上传成功", c)
+}
+
+// CreateFolder 新建文件夹
+func CreateFolder(c *gin.Context) {
+	/* get uid */
+	claims, _ := c.Get("claims")
+	customClaims := claims.(*model.MyCustomClaims)
+	userUID := customClaims.UID
+
+	var folder request.NewFolder
+
+	err := c.ShouldBindJSON(&folder)
+	if err != nil {
+		response.BadRequest(CodeErrorBindJson, "参数错误", c)
+		return
+	}
+
+	err = service.CreateFolderService(folder, userUID)
+	if err != nil {
+		response.BadRequest(CodeErrorCreateFolder, "新建文件夹失败", c)
+		return
+	}
+	response.Created(CodeSuccessCreateFolder, nil, "新建成功", c)
 }
 
 // GetFileList 获取文件列表

@@ -10,3 +10,9 @@ type UploadFile struct {
 	QKey      string `json:"qkey" form:"qkey"`
 	CID       string `json:"cid" form:"cid"`
 }
+
+// NewFolder  新建文件夹
+type NewFolder struct {
+	FolderName string `json:"folder_name" form:"folder_name" binding:"required"`
+	PrefixDir  string `json:"prefix_dir" form:"prefix_dir"`
+}

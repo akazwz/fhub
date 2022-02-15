@@ -40,6 +40,20 @@ func UploadFileService(uploadFile request.UploadFile, uid uuid.UUID) (err error)
 	return
 }
 
+// CreateFolderService 保存文件夹信息到数据库
+func CreateFolderService(folder request.NewFolder, uid uuid.UUID) (err error) {
+	file := model.File{
+		File:      false,
+		FileName:  folder.FolderName,
+		PrefixDir: folder.PrefixDir,
+		Size:      0,
+		UID:       uid,
+	}
+
+	err = global.GDB.Create(&file).Error
+	return
+}
+
 // GetFileListService 根据文件前缀和uid获取文件列表
 func GetFileListService(uid uuid.UUID, prefixDir string) (err error, fileList []model.File) {
 	err = global.GDB.Where("uid = ? AND prefix_dir = ?", uid, prefixDir).Find(&fileList).Error

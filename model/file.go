@@ -12,7 +12,7 @@ type File struct {
 	FID           uuid.UUID `json:"fid" gorm:"column:fid;not null;unique;type:varchar(255);comment: 文件fid;"`
 	File          bool      `json:"file" gorm:"not null;comment: 是否是文件;"`
 	FileName      string    `json:"file_name" gorm:"not null;comment: 文件名;"`
-	PrefixDir     string    `json:"prefix_dir" gorm:"not null;default:0;comment:文件前缀路径;"`
+	PrefixDir     string    `json:"prefix_dir" gorm:"not null;default:0/;comment:文件前缀路径;"`
 	UIDUniqueFile string    `json:"uid_unique_file" gorm:"not null;unique;comment:uid-文件路径前缀文件名;"`
 	Size          int64     `json:"size" gorm:"not null;default:0;comment:文件大小;"`
 	SHA256        string    `json:"sha256" gorm:"column:sha256;not null;type:varchar(255);comment:文件sha256;"`

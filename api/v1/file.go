@@ -117,6 +117,7 @@ func GetFileList(c *gin.Context) {
 	response.Ok(CodeSuccessGetFileList, fileList, "获取成功", c)
 }
 
+// GetFileURI 获取文件 uri
 func GetFileURI(c *gin.Context) {
 	/* get uid */
 	claims, _ := c.Get("claims")
@@ -128,7 +129,7 @@ func GetFileURI(c *gin.Context) {
 
 	err, QKey := service.GetFileQKeyByFID(userUID, fid)
 	if err != nil {
-		response.BadRequest(CodeErrorGetFileUrl, "获取文件URI", c)
+		response.BadRequest(CodeErrorGetFileUri, "获取文件URI", c)
 		return
 	}
 
@@ -152,8 +153,8 @@ func GetFileURI(c *gin.Context) {
 
 	deadline := time.Now().Add(time.Second * 3600).Unix() // 1h
 	privateAccessURL := storage.MakePrivateURLv2(mac, domain, QKey, deadline)
-	type urlRes struct {
-		url string
+	type uriRes struct {
+		uri string
 	}
-	response.Ok(CodeSuccessGetFileUrl, urlRes{url: privateAccessURL}, "获取成功", c)
+	response.Ok(CodeSuccessGetFileUri, uriRes{uri: privateAccessURL}, "获取成功", c)
 }

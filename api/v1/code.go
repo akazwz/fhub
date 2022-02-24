@@ -8,7 +8,7 @@ const (
 	CodeSuccessCreateUploadToken = 2005
 	CodeSuccessGetFileList       = 2006
 	CodeSuccessCreateFolder      = 2007
-	CodeSuccessGetFileUrl        = 2008
+	CodeSuccessGetFileUri        = 2008
 )
 
 const (
@@ -21,5 +21,5 @@ const (
 	CodeErrorParams       = 4007
 	CodeErrorGetFileList  = 4008
 	CodeErrorCreateFolder = 4009
-	CodeErrorGetFileUrl   = 4010
+	CodeErrorGetFileUri   = 4010
 )

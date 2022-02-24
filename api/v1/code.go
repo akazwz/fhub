@@ -8,6 +8,7 @@ const (
 	CodeSuccessCreateUploadToken = 2005
 	CodeSuccessGetFileList       = 2006
 	CodeSuccessCreateFolder      = 2007
+	CodeSuccessGetFileUrl        = 2008
 )
 
 const (

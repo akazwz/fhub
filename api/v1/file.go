@@ -157,8 +157,6 @@ func GetFileURI(c *gin.Context) {
 		response.BadRequest(CodeErrorGetFileUri, "获取失败， uri为空", c)
 		return
 	}
-	type uriRes struct {
-		uri string
-	}
-	response.Ok(CodeSuccessGetFileUri, uriRes{uri: privateAccessURL}, "获取成功", c)
+
+	response.Ok(CodeSuccessGetFileUri, gin.H{"uri": privateAccessURL}, "获取成功", c)
 }

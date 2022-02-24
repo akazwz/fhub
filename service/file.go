@@ -59,3 +59,18 @@ func GetFileListService(uid uuid.UUID, prefixDir string) (err error, fileList []
 	err = global.GDB.Where("uid = ? AND prefix_dir = ?", uid, prefixDir).Find(&fileList).Error
 	return
 }
+
+// GetFileQKeyByFID 根据 uid 和 fid 获取文件QKey
+func GetFileQKeyByFID(uid uuid.UUID, fid string) (err error, QKey string) {
+	file := model.File{}
+	err = global.GDB.Where("uid = ? AND fid = ?", uid, fid).Find(&file).Error
+	if err != nil {
+		return
+	}
+	fileUri := model.FileURI{}
+	err = global.GDB.Where("sha256 = ?", file.SHA256).Find(&fileUri).Error
+	if err != nil {
+		return
+	}
+	return nil, fileUri.QKey
+}

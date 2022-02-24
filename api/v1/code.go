@@ -21,4 +21,5 @@ const (
 	CodeErrorParams       = 4007
 	CodeErrorGetFileList  = 4008
 	CodeErrorCreateFolder = 4009
+	CodeErrorGetFileUrl   = 4010
 )

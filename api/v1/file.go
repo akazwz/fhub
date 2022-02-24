@@ -117,7 +117,26 @@ func GetFileList(c *gin.Context) {
 	response.Ok(CodeSuccessGetFileList, fileList, "获取成功", c)
 }
 
-func GetFileURL(c *gin.Context) {
+func GetFileURI(c *gin.Context) {
+	/* get uid */
+	claims, _ := c.Get("claims")
+	customClaims := claims.(*model.MyCustomClaims)
+	userUID := customClaims.UID
+
+	/* 获取文件Key */
+	fid := c.Query("fid")
+
+	err, QKey := service.GetFileQKeyByFID(userUID, fid)
+	if err != nil {
+		response.BadRequest(CodeErrorGetFileUrl, "获取文件URI", c)
+		return
+	}
+
+	if len(QKey) < 1 {
+		response.BadRequest(CodeErrorParams, "参数错误", c)
+		return
+	}
+
 	accessKey := global.CONF.Qiniu.AccessKey
 	if len(os.Getenv("QAK")) > 0 {
 		accessKey = os.Getenv("QAK")
@@ -130,16 +149,9 @@ func GetFileURL(c *gin.Context) {
 
 	mac := qbox.NewMac(accessKey, secretKey)
 	domain := "https://file.hellozwz.com"
-	/* 获取文件Key */
-	key := c.Query("key")
-
-	if len(key) < 1 {
-		response.BadRequest(CodeErrorParams, "参数错误", c)
-		return
-	}
 
 	deadline := time.Now().Add(time.Second * 3600).Unix() // 1h
-	privateAccessURL := storage.MakePrivateURLv2(mac, domain, key, deadline)
+	privateAccessURL := storage.MakePrivateURLv2(mac, domain, QKey, deadline)
 	type urlRes struct {
 		url string
 	}

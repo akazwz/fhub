@@ -153,6 +153,10 @@ func GetFileURI(c *gin.Context) {
 
 	deadline := time.Now().Add(time.Second * 3600).Unix() // 1h
 	privateAccessURL := storage.MakePrivateURLv2(mac, domain, QKey, deadline)
+	if len(privateAccessURL) < 1 {
+		response.BadRequest(CodeErrorGetFileUri, "获取失败， uri为空", c)
+		return
+	}
 	type uriRes struct {
 		uri string
 	}

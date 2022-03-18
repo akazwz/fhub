@@ -1,13 +1,13 @@
 package user
 
 import (
-	"github.com/akazwz/gin/model"
 	"log"
 
-	"github.com/akazwz/gin/api/v1"
-	"github.com/akazwz/gin/model/request"
-	"github.com/akazwz/gin/model/response"
-	"github.com/akazwz/gin/service"
+	"github.com/akazwz/fhub/api/v1"
+	"github.com/akazwz/fhub/model"
+	"github.com/akazwz/fhub/model/request"
+	"github.com/akazwz/fhub/model/response"
+	"github.com/akazwz/fhub/service"
 	"github.com/gin-gonic/gin"
 )
 

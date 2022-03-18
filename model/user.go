@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/akazwz/gin/utils/crypt"
+	"github.com/akazwz/fhub/utils/crypt"
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )

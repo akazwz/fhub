@@ -3,9 +3,9 @@ package initialize
 import (
 	"net/http"
 
-	"github.com/akazwz/gin/middleware"
-	"github.com/akazwz/gin/model/response"
-	"github.com/akazwz/gin/router"
+	"github.com/akazwz/fhub/middleware"
+	"github.com/akazwz/fhub/model/response"
+	"github.com/akazwz/fhub/router"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -41,6 +41,7 @@ func Routers() *gin.Engine {
 	{
 		/* public 路由 */
 		router.InitPublicRouter(publicRouterV1)
+		router.InitDownloadRouter(publicRouterV1)
 	}
 
 	privateGroupV1 := r.Group("v1")

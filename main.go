@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/akazwz/gin/global"
-	"github.com/akazwz/gin/initialize"
+	"github.com/akazwz/fhub/global"
+	"github.com/akazwz/fhub/initialize"
 )
 
 func main() {

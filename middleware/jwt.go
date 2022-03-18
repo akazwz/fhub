@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/akazwz/gin/global"
-	"github.com/akazwz/gin/model"
-	"github.com/akazwz/gin/model/response"
+	"github.com/akazwz/fhub/global"
+	"github.com/akazwz/fhub/model"
+	"github.com/akazwz/fhub/model/response"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )

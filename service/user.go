@@ -3,10 +3,10 @@ package service
 import (
 	"errors"
 
-	"github.com/akazwz/gin/global"
-	"github.com/akazwz/gin/model"
-	"github.com/akazwz/gin/model/request"
-	"github.com/akazwz/gin/utils/crypt"
+	"github.com/akazwz/fhub/global"
+	"github.com/akazwz/fhub/model"
+	"github.com/akazwz/fhub/model/request"
+	"github.com/akazwz/fhub/utils/crypt"
 )
 
 // RegisterByUsernamePwdService 用户名密码注册

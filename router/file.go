@@ -1,7 +1,7 @@
 package router
 
 import (
-	v1 "github.com/akazwz/gin/api/v1"
+	v1 "github.com/akazwz/fhub/api/v1"
 	"github.com/gin-gonic/gin"
 )
 

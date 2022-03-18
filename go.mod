@@ -1,7 +1,7 @@
-module github.com/akazwz/gin
+module github.com/akazwz/fhub
 
-// +heroku goVersion go1.17
-go 1.17
+// +heroku goVersion go1.18
+go 1.18
 
 require (
 	github.com/fsnotify/fsnotify v1.5.1
@@ -11,7 +11,7 @@ require (
 	github.com/qiniu/go-sdk/v7 v7.11.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.10.1
-	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
+	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd
 	gorm.io/driver/mysql v1.3.2
 	gorm.io/gorm v1.23.2
 )
@@ -41,7 +41,7 @@ require (
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
+	golang.org/x/sys v0.0.0-20220318055525-2edf467146b5 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect

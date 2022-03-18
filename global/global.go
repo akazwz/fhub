@@ -1,7 +1,7 @@
 package global
 
 import (
-	"github.com/akazwz/gin/config"
+	"github.com/akazwz/fhub/config"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )

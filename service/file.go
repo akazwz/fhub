@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/akazwz/gin/global"
-	"github.com/akazwz/gin/model"
-	"github.com/akazwz/gin/model/request"
+	"github.com/akazwz/fhub/global"
+	"github.com/akazwz/fhub/model"
+	"github.com/akazwz/fhub/model/request"
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )

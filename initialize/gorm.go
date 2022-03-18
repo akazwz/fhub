@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/akazwz/gin/global"
-	"github.com/akazwz/gin/model"
+	"github.com/akazwz/fhub/global"
+	"github.com/akazwz/fhub/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

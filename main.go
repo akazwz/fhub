@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -17,9 +16,9 @@ func main() {
 		log.Println("初始化配置失败")
 	}
 
-	global.GDB = initialize.InitDB()
+	//global.GDB = initialize.InitDB()
 
-	if global.GDB != nil {
+	/*if global.GDB != nil {
 		initialize.CreateTables(global.GDB)
 		db, _ := global.GDB.DB()
 		defer func(db *sql.DB) {
@@ -31,7 +30,7 @@ func main() {
 	} else {
 		log.Println("数据库连接失败")
 		return
-	}
+	}*/
 
 	routers := initialize.Routers()
 

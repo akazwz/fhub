@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/akazwz/fhub/global"
@@ -10,56 +11,26 @@ import (
 	"gorm.io/gorm"
 )
 
-// InitDB  初始化数据库
-func InitDB() *gorm.DB {
-	/* 配置文件中配置 */
-	dbConfig := global.CONF.DataBase
-
-	/* 环境变量覆盖配置文件 */
-	dbUser := dbConfig.User
-	if len(os.Getenv("DB_USER")) > 0 {
-		dbUser = os.Getenv("DB_USER")
-	}
-	dbPassword := dbConfig.Password
-	if len(os.Getenv("DB_PASSWORD")) > 0 {
-		dbPassword = os.Getenv("DB_PASSWORD")
-	}
-	dbHost := dbConfig.Host
-	if len(os.Getenv("DB_HOST")) > 0 {
-		dbHost = os.Getenv("DB_HOST")
-	}
-
-	dbName := dbConfig.Name
-	if len(os.Getenv("DB_NAME")) > 0 {
-		dbName = os.Getenv("DB_NAME")
-	}
-
-	/* 获取 dsn */
+func InitGormDB() {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8&parseTime=True&loc=Local",
-		dbUser,
-		dbPassword,
-		dbHost,
-		dbName,
+		os.Getenv("MYSQL_USER"),
+		os.Getenv("MYSQL_PASSWORD"),
+		os.Getenv("MYSQL_HOST"),
+		os.Getenv("MYSQL_NAME"),
 	)
-
 	if db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
-		return nil
+		log.Fatalln("Init Gorm DB Error")
 	} else {
-		//sqlDB, _ := db.DB()
-		//sqlDB.SetMaxIdleConns()
-		//sqlDB.SetMaxIdleConns()
-		return db
+		global.GDB = db
 	}
 }
 
-// CreateTables 数据库表迁移
-func CreateTables(db *gorm.DB) {
-	err := db.AutoMigrate(
+func MigrateTables() {
+	if err := global.GDB.AutoMigrate(
 		model.User{},
 		model.FileURI{},
 		model.File{},
-	)
-	if err != nil {
-		os.Exit(0)
+	); err != nil {
+		log.Fatalln(err)
 	}
 }

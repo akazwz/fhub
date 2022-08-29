@@ -5,47 +5,41 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/akazwz/fhub/global"
 	"github.com/akazwz/fhub/initialize"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	global.VP = initialize.InitViper()
+	//counter.Consume()
+	// 读取环境变量配置
+	InitEnvConfig()
+	// 初始化 gorm db
+	initialize.InitGormDB()
 
-	if global.VP == nil {
-		log.Println("初始化配置失败")
-	}
+	// 迁移表
+	initialize.MigrateTables()
 
-	//global.GDB = initialize.InitDB()
-
-	/*if global.GDB != nil {
-		initialize.CreateTables(global.GDB)
-		db, _ := global.GDB.DB()
-		defer func(db *sql.DB) {
-			err := db.Close()
-			if err != nil {
-
-			}
-		}(db)
-	} else {
-		log.Println("数据库连接失败")
-		return
-	}*/
-
-	routers := initialize.Routers()
-
-	/* 端口地址 */
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
+	// 初始化路由
+	r := initialize.InitRouter()
+	// 端口地址
+	port := os.Getenv("API_PORT")
 	s := &http.Server{
-		Addr:    ":" + port,
-		Handler: routers,
+		Addr:    port,
+		Handler: r,
 	}
-
 	if err := s.ListenAndServe(); err != nil {
-		log.Println("系统启动失败")
+		log.Println(err)
+		log.Fatalln("Api启动失败")
+	}
+}
+
+// InitEnvConfig 读取 env 配置文件
+func InitEnvConfig() {
+	// 非生产环境读取配置文件
+	if os.Getenv("MODE") != "prod" {
+		err := godotenv.Load(".env.local")
+		if err != nil {
+			log.Fatalln("读取配置文件失败")
+		}
 	}
 }

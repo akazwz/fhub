@@ -1,7 +1,7 @@
 package model
 
 type File struct {
-	ID        uint   `json:"id" gorm:"primary_key"`
+	ID        string `json:"id" gorm:"primary_key"`
 	Type      string `json:"type" gorm:"not null;"`
 	Name      string `json:"name" gorm:"not null;"`
 	PrefixDir string `json:"prefix_dir" gorm:"not null;"`
@@ -19,7 +19,7 @@ func (f File) TableName() string {
 type FileURI struct {
 	ID        string `json:"id" gorm:"primary_key"`
 	SHA256    string `json:"sha256" gorm:"column:sha256;not null;unique;type:varchar(255);"`
-	Providers string `json:"providers" gorm:"not null;"`
+	Provider  string `json:"provider" gorm:"not null;"`
 	CreatedAt int    `json:"created_at" gorm:"autoCreateTime:nano;"`
 	UpdatedAt int    `json:"updated_at" gorm:"autoUpdateTime:nano;"`
 }

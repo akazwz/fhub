@@ -6,7 +6,7 @@ import (
 	"github.com/akazwz/fhub/global"
 	"github.com/akazwz/fhub/model"
 	"github.com/akazwz/fhub/utils"
-	uuid "github.com/satori/go.uuid"
+	gonanoid "github.com/matoous/go-nanoid/v2"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +19,7 @@ func (authService *AuthService) SignupService(u model.User) (*model.User, error)
 		return user, errors.New("用户名已注册")
 	}
 	u.Password = utils.BcryptHash(u.Password)
-	u.ID = uuid.NewV4().String()
+	u.ID = gonanoid.Must(32)
 	err := global.GDB.Create(&u).Error
 	return &u, err
 }

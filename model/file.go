@@ -18,7 +18,7 @@ func (f File) TableName() string {
 
 type FileURI struct {
 	ID        string `json:"id" gorm:"primary_key"`
-	SHA256    string `json:"sha256" gorm:"column:sha256;not null;unique;type:varchar(255);"`
+	SHA256    string `json:"sha256" gorm:"column:sha256;not null;type:varchar(255);"`
 	Provider  string `json:"provider" gorm:"not null;"`
 	CreatedAt int    `json:"created_at" gorm:"autoCreateTime:nano;"`
 	UpdatedAt int    `json:"updated_at" gorm:"autoUpdateTime:nano;"`

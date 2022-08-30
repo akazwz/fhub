@@ -35,8 +35,10 @@ func InitRouter() *gin.Engine {
 	fileGroup := r.Group("/file").Use(middleware.JWTAuth())
 	{
 		fileGroup.POST("", file.CreateFile)
+		fileGroup.POST("/pre", file.CreateFilePre)
 		fileGroup.POST("/folder", file.CreateFolder)
 		fileGroup.GET("/list", file.FindFiles)
+		fileGroup.GET("/:id", file.FindFileURI)
 	}
 
 	return r

@@ -8,8 +8,42 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var fileService = service.FileService{}
+
+func CreateFilePre(c *gin.Context) {
+	uidAny, _ := c.Get("uid")
+	uid := uidAny.(string)
+
+	var f request.PreFile
+	err := c.ShouldBind(&f)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+
+	uri, err := fileService.FindFileURIBySha256(f.SHA256)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	file := model.File{
+		Type:      "file",
+		Name:      f.Name,
+		PrefixDir: f.PrefixDir,
+		Size:      f.Size,
+		SHA256:    f.SHA256,
+		UID:       uid,
+	}
+
+	err = fileService.CreateFilePre(file)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	response.Ok(200, uri, "success", c)
+}
+
 func CreateFile(c *gin.Context) {
-	fileService := service.FileService{}
 	uidAny, _ := c.Get("uid")
 	uid := uidAny.(string)
 
@@ -21,7 +55,7 @@ func CreateFile(c *gin.Context) {
 	}
 
 	file := model.File{
-		Type:      f.Type,
+		Type:      "file",
 		Name:      f.Name,
 		PrefixDir: f.PrefixDir,
 		Size:      f.Size,
@@ -42,7 +76,6 @@ func CreateFile(c *gin.Context) {
 }
 
 func CreateFolder(c *gin.Context) {
-	fileService := service.FileService{}
 	uidAny, _ := c.Get("uid")
 	uid := uidAny.(string)
 
@@ -71,7 +104,6 @@ func CreateFolder(c *gin.Context) {
 }
 
 func FindFiles(c *gin.Context) {
-	fileService := service.FileService{}
 	uidAny, _ := c.Get("uid")
 	uid := uidAny.(string)
 
@@ -83,4 +115,17 @@ func FindFiles(c *gin.Context) {
 		return
 	}
 	response.Ok(200, files, "success", c)
+}
+
+func FindFileURI(c *gin.Context) {
+	uidAny, _ := c.Get("uid")
+	uid := uidAny.(string)
+
+	fid := c.Param("id")
+	fileProvider, err := fileService.FindFileURI(fid, uid)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	response.Ok(200, fileProvider, "success", c)
 }

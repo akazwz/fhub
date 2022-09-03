@@ -28,8 +28,8 @@ func InitGormDB() {
 func MigrateTables() {
 	if err := global.GDB.AutoMigrate(
 		model.User{},
-		model.FileURI{},
-		model.File{},
+		model.Object{},
+		model.ObjectURI{},
 	); err != nil {
 		log.Fatalln(err)
 	}

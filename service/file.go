@@ -9,7 +9,7 @@ import (
 
 type FileService struct{}
 
-func (s *FileService) CreateFile(file model.File, fileUri model.FileURI) error {
+func (s *FileService) CreateFile(file model.Object, fileUri model.ObjectURI) error {
 	file.ID = gonanoid.Must(32)
 	fileUri.ID = gonanoid.Must(32)
 	// transaction
@@ -24,14 +24,14 @@ func (s *FileService) CreateFile(file model.File, fileUri model.FileURI) error {
 	return err
 }
 
-func (s *FileService) CreateFilePre(file model.File) error {
+func (s *FileService) CreateFilePre(file model.Object) error {
 	file.ID = gonanoid.Must(32)
 	err := global.GDB.Create(&file).Error
 	return err
 }
 
 func (s *FileService) FindFileURIBySha256(sha256 string) (string, error) {
-	var fileURI model.FileURI
+	var fileURI model.ObjectURI
 	err := global.GDB.Where("sha256 = ?", sha256).First(&fileURI).Error
 	if err != nil {
 		return "", err
@@ -39,25 +39,25 @@ func (s *FileService) FindFileURIBySha256(sha256 string) (string, error) {
 	return fileURI.Provider, nil
 }
 
-func (s *FileService) CreateFolder(file model.File) error {
+func (s *FileService) CreateFolder(file model.Object) error {
 	file.ID = gonanoid.Must(32)
 	err := global.GDB.Create(&file).Error
 	return err
 }
 
-func (s *FileService) FindFiles(uid, prefixDir string) ([]model.File, error) {
-	var fileList []model.File
+func (s *FileService) FindFiles(uid, prefixDir string) ([]model.Object, error) {
+	var fileList []model.Object
 	err := global.GDB.Where("uid = ? and prefix_dir = ?", uid, prefixDir).Find(&fileList).Error
 	return fileList, err
 }
 
 func (s *FileService) FindFileURI(id, uid string) (string, error) {
-	var file model.File
+	var file model.Object
 	err := global.GDB.Where("id = ? and uid = ?", id, uid).First(&file).Error
 	if err != nil {
 		return "", err
 	}
-	var fileUri model.FileURI
+	var fileUri model.ObjectURI
 	err = global.GDB.Where("sha256 = ?", file.SHA256).First(&fileUri).Error
 	if err != nil {
 		return "", err

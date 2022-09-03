@@ -26,13 +26,13 @@ func CreateFilePre(c *gin.Context) {
 		response.BadRequest(400, nil, err.Error(), c)
 		return
 	}
-	file := model.File{
-		Type:      "file",
-		Name:      f.Name,
-		PrefixDir: f.PrefixDir,
-		Size:      f.Size,
-		SHA256:    f.SHA256,
-		UID:       uid,
+	file := model.Object{
+		Type:     "file",
+		Name:     f.Name,
+		ParentID: f.ParentID,
+		Size:     f.Size,
+		SHA256:   f.SHA256,
+		UID:      uid,
 	}
 
 	err = fileService.CreateFilePre(file)
@@ -54,16 +54,16 @@ func CreateFile(c *gin.Context) {
 		return
 	}
 
-	file := model.File{
-		Type:      "file",
-		Name:      f.Name,
-		PrefixDir: f.PrefixDir,
-		Size:      f.Size,
-		SHA256:    f.SHA256,
-		UID:       uid,
+	file := model.Object{
+		Type:     "file",
+		Name:     f.Name,
+		ParentID: f.ParentID,
+		Size:     f.Size,
+		SHA256:   f.SHA256,
+		UID:      uid,
 	}
 
-	fileUri := model.FileURI{
+	fileUri := model.ObjectURI{
 		SHA256:   f.SHA256,
 		Provider: f.Provider,
 	}
@@ -86,13 +86,13 @@ func CreateFolder(c *gin.Context) {
 		return
 	}
 
-	file := model.File{
-		Type:      "folder",
-		Name:      folder.Name,
-		PrefixDir: folder.PrefixDir,
-		Size:      0,
-		SHA256:    "",
-		UID:       uid,
+	file := model.Object{
+		Type:     "folder",
+		Name:     folder.Name,
+		ParentID: folder.ParentID,
+		Size:     0,
+		SHA256:   "",
+		UID:      uid,
 	}
 
 	err = fileService.CreateFolder(file)

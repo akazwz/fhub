@@ -9,16 +9,16 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
-	//counter.Consume()
+func init() {
 	// 读取环境变量配置
 	InitEnvConfig()
 	// 初始化 gorm db
 	initialize.InitGormDB()
-
 	// 迁移表
 	initialize.MigrateTables()
+}
 
+func main() {
 	// 初始化路由
 	r := initialize.InitRouter()
 	// 端口地址

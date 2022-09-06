@@ -4,11 +4,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/akazwz/fhub/initialize"
 	"github.com/joho/godotenv"
-	"github.com/robfig/cron/v3"
 )
 
 func init() {
@@ -21,12 +19,6 @@ func init() {
 }
 
 func main() {
-	c := cron.New(cron.WithSeconds())
-	c.AddFunc("1 * * * * *", func() {
-		log.Println(time.Now())
-	})
-	c.Run()
-
 	// 初始化路由
 	r := initialize.InitRouter()
 	// 端口地址

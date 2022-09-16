@@ -10,6 +10,7 @@ import (
 
 var fileService = service.ObjectService{}
 
+// CreateFile 新建文件
 func CreateFile(c *gin.Context) {
 	uidAny, _ := c.Get("uid")
 	uid := uidAny.(string)
@@ -22,11 +23,11 @@ func CreateFile(c *gin.Context) {
 	}
 
 	file := model.File{
-		Name:     f.Name,
-		ParentID: f.ParentID,
-		Size:     f.Size,
-		SHA256:   f.SHA256,
-		UID:      uid,
+		Name:        f.Name,
+		ParentID:    f.ParentID,
+		Size:        int64(f.Size),
+		ContentHash: f.SHA256,
+		UID:         uid,
 	}
 
 	fileUri := model.FileURI{
@@ -41,6 +42,7 @@ func CreateFile(c *gin.Context) {
 	}
 }
 
+// CreateFolder 新建文件夹
 func CreateFolder(c *gin.Context) {
 	uidAny, _ := c.Get("uid")
 	uid := uidAny.(string)
@@ -66,6 +68,7 @@ func CreateFolder(c *gin.Context) {
 	response.Created(200, nil, "success", c)
 }
 
+// FindFilesByParentID 根据 parent id查找文件
 func FindFilesByParentID(c *gin.Context) {
 	uidAny, _ := c.Get("uid")
 	uid := uidAny.(string)
@@ -79,6 +82,14 @@ func FindFilesByParentID(c *gin.Context) {
 	response.Ok(200, files, "success", c)
 }
 
+func FindFoldersByParentID(c *gin.Context) {
+
+}
+
+func FindFoldersAndFilesByParentID(c *gin.Context) {
+
+}
+
 func FindFilesByKeywords(c *gin.Context) {
 	uidAny, _ := c.Get("uid")
 	uid := uidAny.(string)
@@ -90,6 +101,10 @@ func FindFilesByKeywords(c *gin.Context) {
 		return
 	}
 	response.Ok(200, files, "success", c)
+}
+
+func FindFoldersByKeywords() {
+
 }
 
 func FindFileURI(c *gin.Context) {

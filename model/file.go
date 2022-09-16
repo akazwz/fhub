@@ -11,13 +11,16 @@ var alphabet = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 
 type File struct {
 	Model
-	Name     string `gorm:"unique_index:idx_only_one"`
-	Size     uint64
-	SHA256   string `json:"sha256" gorm:"column:sha256;type:varchar(255);"`
-	ParentID string `gorm:"index:parent_id;unique_index:idx_only_one"`
-	UID      string `gorm:"index:user_id;unique_index:idx_only_one"`
-
-	Position string `gorm:"-"`
+	Category      string `json:"category"`
+	ContentHash   string `json:"content_hash"`
+	UID           string `json:"uid"`
+	ParentID      string `json:"parent_id"`
+	FileExtension string `json:"file_extension"`
+	MimeType      string `json:"mime_type"`
+	Name          string `json:"name"`
+	Size          int64  `json:"size"`
+	Starred       bool   `json:"starred"`
+	Thumbnail     string `json:"thumbnail"`
 }
 
 func (file *File) TableName() string {
@@ -29,6 +32,7 @@ func (file *File) BeforeCreate(*gorm.DB) (err error) {
 	return
 }
 
+// Create 创建文件
 func (file *File) Create(db *gorm.DB) error {
 	err := db.Transaction(func(tx *gorm.DB) error {
 		// create file
@@ -42,17 +46,20 @@ func (file *File) Create(db *gorm.DB) error {
 	return err
 }
 
+// FindFileByUIDAndID 通过 uid 和 id 查找文件
 func FindFileByUIDAndID(db *gorm.DB, uid, id string) (File, error) {
 	var file File
 	err := db.Where("uid = ? AND id = ?", uid, id).Find(&file).Error
 	return file, err
 }
 
+// Rename 重命名文件
 func (file *File) Rename(db *gorm.DB, newName string) error {
 	return db.Model(&file).UpdateColumn("name", newName).Error
 }
 
-func GetFilesByKeywords(db *gorm.DB, uid string, parents []string, keywords ...interface{}) ([]File, error) {
+// FindFilesByKeywords 通过关键词搜索文件
+func FindFilesByKeywords(db *gorm.DB, uid string, parents []string, keywords ...interface{}) ([]File, error) {
 	var (
 		conditions string
 		files      []File
@@ -83,7 +90,8 @@ func GetFilesByKeywords(db *gorm.DB, uid string, parents []string, keywords ...i
 	return files, result.Error
 }
 
-func GetFilesByParentID(db *gorm.DB, uid, id string) ([]File, error) {
+// FindFilesByParentID 通过 parent id查找文件
+func FindFilesByParentID(db *gorm.DB, uid, id string) ([]File, error) {
 	files := make([]File, 0)
 	result := db.Where("uid = ? and parent_id = ?", uid, id).Find(&files)
 	return files, result.Error

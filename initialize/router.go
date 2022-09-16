@@ -32,11 +32,19 @@ func InitRouter() *gin.Engine {
 		authGroup.GET("/me", middleware.JWTAuth(), auth.Me)
 	}
 
-	fileGroup := r.Group("/files").Use(middleware.JWTAuth())
+	fileGroup := r.Group("/file").Use(middleware.JWTAuth())
 	{
+		// 创建文件
 		fileGroup.POST("/", file.CreateFile)
+		// 创建文件夹
 		fileGroup.POST("/folder", file.CreateFolder)
-		fileGroup.GET("/folder/:id", file.FindFilesByParentID)
+		// 查询文件列表
+		fileGroup.GET("/file/list", file.FindFilesByParentID)
+		// 查询文件路径
+		fileGroup.GET("/file/path", file.FindFilesByParentID)
+		//
+		fileGroup.GET("/folder/:id/folders", file.FindFoldersByParentID)
+		fileGroup.GET("/folder/:id/all", file.FindFoldersAndFilesByParentID)
 		fileGroup.GET("/keywords/:keywords", file.FindFilesByKeywords)
 		fileGroup.GET("/:id/uri", file.FindFileURI)
 	}

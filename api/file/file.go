@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var fileService = service.ObjectService{}
+var fileService = service.FileService{}
 
 // CreateFile 新建文件
 func CreateFile(c *gin.Context) {

@@ -17,9 +17,10 @@ func (fileURI *FileURI) TableName() string {
 	return "file_uris"
 }
 
-func (fileURI *FileURI) BeforeCreate(*gorm.DB) (err error) {
-	fileURI.ID = gonanoid.MustGenerate(alphabet, 32)
-	return
+func (fileURI *FileURI) BeforeCreate(*gorm.DB) error {
+	id, err := gonanoid.Generate(alphabet, 32)
+	fileURI.ID = id
+	return err
 }
 
 func (fileURI *FileURI) Create(db *gorm.DB) error {

@@ -27,9 +27,10 @@ func (file *File) TableName() string {
 	return "files"
 }
 
-func (file *File) BeforeCreate(*gorm.DB) (err error) {
-	file.ID = gonanoid.MustGenerate(alphabet, 32)
-	return
+func (file *File) BeforeCreate(*gorm.DB) error {
+	id, err := gonanoid.Generate(alphabet, 32)
+	file.ID = id
+	return err
 }
 
 // Create 创建文件

@@ -19,9 +19,10 @@ func (folder *Folder) TableName() string {
 	return "folders"
 }
 
-func (folder *Folder) BeforeCreate(*gorm.DB) (err error) {
-	folder.ID = gonanoid.MustGenerate(alphabet, 32)
-	return
+func (folder *Folder) BeforeCreate(*gorm.DB) error {
+	id, err := gonanoid.Generate(alphabet, 32)
+	folder.ID = id
+	return err
 }
 
 // Create 创建文件夹

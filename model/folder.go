@@ -5,6 +5,11 @@ import (
 	"gorm.io/gorm"
 )
 
+type FolderPath struct {
+	Name string `json:"name"`
+	ID   string `json:"id"`
+}
+
 type Folder struct {
 	Model
 	Name     string `gorm:"unique_index:idx_only_one_name"`
@@ -12,7 +17,7 @@ type Folder struct {
 	ParentID string `json:"parent_id"`
 	Starred  bool   `json:"starred"`
 
-	Paths []string `gorm:"-"`
+	Path []FolderPath `gorm:"-"`
 }
 
 func (folder *Folder) TableName() string {
@@ -30,27 +35,37 @@ func (folder *Folder) Create(db *gorm.DB) error {
 	return db.Create(folder).Error
 }
 
-// GetChildFolder 获取子文件夹
-func (folder *Folder) GetChildFolder(db *gorm.DB) ([]Folder, error) {
+// GetChildFolders 获取子文件夹
+func (folder *Folder) GetChildFolders(db *gorm.DB) ([]Folder, error) {
 	folders := make([]Folder, 0)
-	result := db.Where("parent_file_id = ?", folder.ID).Find(&folders)
+	result := db.Where("uid = ? AND parent_id = ?", folder.UID, folder.ID).Find(&folders)
 	return folders, result.Error
 }
 
-// GetPaths 获取路径
-func (folder *Folder) GetPaths(db *gorm.DB) error {
+// GetPath 获取路径
+func (folder *Folder) GetPath(db *gorm.DB) error {
 	if folder.ParentID == "root" {
-		folder.Paths = append(folder.Paths, "root")
+		folder.Path = append(folder.Path, FolderPath{
+			Name: "Root",
+			ID:   "root",
+		})
 		return nil
 	}
 	var parentFolder Folder
 	err := db.
-		Where("id = ? AND uid = ?", folder.ParentID, folder.UID).
+		Where("uid = ? AND id = ?", folder.UID, folder.ParentID).
 		First(&parentFolder).Error
 
+	if err == gorm.ErrRecordNotFound {
+		return nil
+	}
+
 	if err == nil {
-		err := parentFolder.GetPaths(db)
-		folder.Paths = append(folder.Paths, parentFolder.Name)
+		err := parentFolder.GetPath(db)
+		folder.Path = append(folder.Path, FolderPath{
+			Name: parentFolder.Name,
+			ID:   parentFolder.ID,
+		})
 		return err
 	}
 	return err

@@ -42,44 +42,8 @@ func CreateFile(c *gin.Context) {
 	}
 }
 
-// CreateFolder 新建文件夹
-func CreateFolder(c *gin.Context) {
-	uidAny, _ := c.Get("uid")
-	uid := uidAny.(string)
+func GetPathByParentID() {
 
-	var folder request.Folder
-	err := c.ShouldBind(&folder)
-	if err != nil {
-		response.BadRequest(400, nil, err.Error(), c)
-		return
-	}
-
-	file := model.Folder{
-		Name:     folder.Name,
-		ParentID: folder.ParentID,
-		UID:      uid,
-	}
-
-	err = fileService.CreateFolder(file)
-	if err != nil {
-		response.BadRequest(400, nil, err.Error(), c)
-		return
-	}
-	response.Created(200, nil, "success", c)
-}
-
-// FindFilesByParentID 根据 parent id查找文件
-func FindFilesByParentID(c *gin.Context) {
-	uidAny, _ := c.Get("uid")
-	uid := uidAny.(string)
-
-	parentID := c.Param("id")
-	files, err := fileService.FindFilesByParentID(uid, parentID)
-	if err != nil {
-		response.BadRequest(400, nil, err.Error(), c)
-		return
-	}
-	response.Ok(200, files, "success", c)
 }
 
 func FindFoldersByParentID(c *gin.Context) {

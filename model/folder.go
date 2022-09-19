@@ -12,12 +12,12 @@ type FolderPath struct {
 
 type Folder struct {
 	Model
-	Name     string `gorm:"unique_index:idx_only_one_name"`
-	UID      string `json:"uid"`
+	Name     string `gorm:"unique_index:idx_only_one_name" json:"name"`
+	UID      string `json:"-"`
 	ParentID string `json:"parent_id"`
 	Starred  bool   `json:"starred"`
 
-	Path []FolderPath `gorm:"-"`
+	Path []FolderPath `gorm:"-" json:"-"`
 }
 
 func (folder *Folder) TableName() string {

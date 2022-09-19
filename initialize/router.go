@@ -38,7 +38,7 @@ func InitRouter() *gin.Engine {
 		folderGroup.GET("/:id/all", folder.FindFoldersAndFilesByParentID)
 		folderGroup.GET("/:id/folders", folder.FindFoldersByParentID)
 		folderGroup.GET("/:id/files", folder.FindFilesByParentID)
-		folderGroup.GET("/:id/:name", folder.CreateFolder)
+		folderGroup.POST("/:id/:name", folder.CreateFolder)
 	}
 
 	return r

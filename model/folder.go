@@ -56,16 +56,14 @@ func (folder *Folder) GetPath(db *gorm.DB) error {
 		Where("uid = ? AND id = ?", folder.UID, folder.ParentID).
 		First(&parentFolder).Error
 
-	if err == gorm.ErrRecordNotFound {
-		return nil
-	}
-
 	if err == nil {
-		err := parentFolder.GetPath(db)
 		folder.Path = append(folder.Path, FolderPath{
 			Name: parentFolder.Name,
 			ID:   parentFolder.ID,
 		})
+		// 变更 parentID
+		folder.ParentID = parentFolder.ParentID
+		err := folder.GetPath(db)
 		return err
 	}
 	return err

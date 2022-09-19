@@ -1,6 +1,8 @@
 package service
 
 import (
+	"sort"
+
 	"github.com/akazwz/fhub/global"
 	"github.com/akazwz/fhub/model"
 )
@@ -33,13 +35,18 @@ func (s *FolderService) FindFoldersByParentID(uid, parentID string) ([]model.Fol
 }
 
 func (s *FolderService) FindPath(uid, parentID string) ([]model.FolderPath, error) {
-	folder := model.Folder{
+	folder := &model.Folder{
 		ParentID: parentID,
 		UID:      uid,
 	}
+
 	err := folder.GetPath(global.GDB)
 	if err != nil {
 		return nil, err
 	}
+	// 反转数组
+	sort.SliceStable(folder.Path, func(i, j int) bool {
+		return true
+	})
 	return folder.Path, err
 }

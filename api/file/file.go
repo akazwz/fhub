@@ -22,20 +22,27 @@ func CreateFile(c *gin.Context) {
 		return
 	}
 
+	// TODO category
+	category := ""
+	fileExtension := ""
+
 	file := model.File{
-		Name:        f.Name,
-		ParentID:    f.ParentID,
-		Size:        int64(f.Size),
-		ContentHash: f.SHA256,
-		UID:         uid,
+		Category:      category,
+		Name:          f.Name,
+		ParentID:      f.ParentID,
+		Size:          int64(f.Size),
+		ContentHash:   f.ContentHash,
+		FileExtension: fileExtension,
+		UID:           uid,
 	}
 
-	fileUri := model.FileURI{
-		SHA256:   f.SHA256,
-		Provider: f.Provider,
+	provider := model.Provider{
+		ContentHash: f.ContentHash,
+		Provider:    f.Provider,
+		URI:         f.URI,
 	}
 
-	err = fileService.CreateFile(file, fileUri)
+	err = fileService.CreateFile(file, provider)
 	if err != nil {
 		response.BadRequest(400, nil, err.Error(), c)
 		return
@@ -71,15 +78,20 @@ func FindFoldersByKeywords() {
 
 }
 
+// FindFileURI 获取文件 uri
 func FindFileURI(c *gin.Context) {
 	uidAny, _ := c.Get("uid")
 	uid := uidAny.(string)
 
 	id := c.Param("id")
-	provider, err := fileService.FindFileByUIDAndID(uid, id)
+	file, err := fileService.FindFileByUIDAndID(uid, id)
 	if err != nil {
 		response.BadRequest(400, nil, err.Error(), c)
 		return
 	}
-	response.Ok(200, provider, "success", c)
+	uri, err := fileService.FindURIByHash(file.ContentHash)
+	if err != nil {
+		return
+	}
+	response.Ok(200, uri, "success", c)
 }

@@ -35,16 +35,12 @@ func (file *File) BeforeCreate(*gorm.DB) error {
 
 // Create 创建文件
 func (file *File) Create(db *gorm.DB) error {
-	err := db.Transaction(func(tx *gorm.DB) error {
-		// create file
-		if err := tx.Create(file).Error; err != nil {
-			log.Println("create file error")
-			return err
-		}
-		// TODO update user storage
-		return nil
-	})
-	return err
+	// create file
+	if err := db.Create(file).Error; err != nil {
+		log.Println("create file error")
+		return err
+	}
+	return nil
 }
 
 // FindFileByUIDAndID 通过 uid 和 id 查找文件
@@ -94,6 +90,13 @@ func FindFilesByKeywords(db *gorm.DB, uid string, parents []string, keywords ...
 // FindFilesByParentID 通过 parent id查找文件
 func FindFilesByParentID(db *gorm.DB, uid, id string) ([]File, error) {
 	files := make([]File, 0)
-	result := db.Where("uid = ? and parent_id = ?", uid, id).Find(&files)
+	result := db.Where("uid = ? and parent_id = ?", uid, id).
+		Order("created_at").
+		Find(&files)
 	return files, result.Error
+}
+
+func DeleteFilesByIDList(db *gorm.DB, idList []string) error {
+	file := File{}
+	return db.Where("id IN ?", idList).Delete(&file).Error
 }

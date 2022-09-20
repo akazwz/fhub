@@ -8,15 +8,17 @@ import (
 
 type FileService struct{}
 
-func (s *FileService) CreateFile(file model.File, fileUri model.FileURI) error {
+func (s *FileService) CreateFile(file model.File, provider model.Provider) error {
 	// transaction
 	err := global.GDB.Transaction(func(tx *gorm.DB) error {
-		// create file
+		// 创建文件
 		err := file.Create(tx)
 		if err != nil {
 			return err
 		}
-		err = fileUri.Create(tx)
+		// 创建provider
+		err = provider.Create(tx)
+		// TODO 更新用户空间
 		return err
 	})
 	return err
@@ -27,13 +29,13 @@ func (s *FileService) FindFileByUIDAndID(uid, id string) (model.File, error) {
 	return file, err
 }
 
-func (s *FileService) FindFileURIBySha256(sha256 string) (string, error) {
-	var fileURI model.FileURI
-	provider, err := fileURI.FindFileURIBySha256(global.GDB, sha256)
+func (s *FileService) FindURIByHash(hash string) (string, error) {
+	provider := model.Provider{ContentHash: hash}
+	err := provider.FindURIByHash(global.GDB)
 	if err != nil {
 		return "", err
 	}
-	return provider, nil
+	return provider.URI, nil
 }
 
 func (s *FileService) FindFilesByKeywords(uid string, parents []string, keywords string) ([]model.File, error) {

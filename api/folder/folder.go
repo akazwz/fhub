@@ -31,6 +31,48 @@ func CreateFolder(c *gin.Context) {
 	response.Created(200, nil, "success", c)
 }
 
+// DeleteFolder 删除文件夹
+func DeleteFolder(c *gin.Context) {
+	uidAny, _ := c.Get("uid")
+	uid := uidAny.(string)
+
+	id := c.Param("id")
+
+	folder := model.Folder{
+		Model: model.Model{ID: id},
+		UID:   uid,
+	}
+
+	err := folderService.DeleteFolder(folder)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	response.Ok(200, folder, "success", c)
+}
+
+// RenameFolder 重命名文件夹
+func RenameFolder(c *gin.Context) {
+	uidAny, _ := c.Get("uid")
+	uid := uidAny.(string)
+
+	id := c.Param("id")
+	folderName := c.Param("name")
+
+	folder := model.Folder{
+		Model: model.Model{ID: id},
+		UID:   uid,
+		Name:  folderName,
+	}
+
+	err := folderService.RenameFolder(folder)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	response.Ok(200, folder, "success", c)
+}
+
 // FindFilesByParentID 根据 parent id查找文件
 func FindFilesByParentID(c *gin.Context) {
 	uidAny, _ := c.Get("uid")

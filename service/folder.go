@@ -14,6 +14,16 @@ func (s *FolderService) CreateFolder(folder model.Folder) error {
 	return err
 }
 
+func (s *FolderService) DeleteFolder(folder model.Folder) error {
+	err := folder.Delete(global.GDB)
+	return err
+}
+
+func (s *FolderService) RenameFolder(folder model.Folder) error {
+	err := folder.Rename(global.GDB)
+	return err
+}
+
 func (s *FolderService) FindFilesByParentID(uid, parentID string) ([]model.File, error) {
 	files, err := model.FindFilesByParentID(global.GDB, uid, parentID)
 	if err != nil {

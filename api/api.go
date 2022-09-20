@@ -15,7 +15,7 @@ func Healthz(c *gin.Context) {
 func Endpoints(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"teapot":   "/teapot",
-		"file":     "/file",
+		"files":    "/files",
 		"auth":     "/auth",
 		"s3":       "/s3",
 		"image":    "/image",

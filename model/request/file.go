@@ -1,11 +1,12 @@
 package request
 
 type File struct {
-	Name     string `json:"name" binding:"required"`
-	ParentID string `json:"parent_id" binding:"required"`
-	Size     uint64 `json:"size" binding:"required"`
-	SHA256   string `json:"sha256" binding:"required"`
-	Provider string `json:"provider" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	ParentID    string `json:"parent_id" binding:"required"`
+	Size        uint64 `json:"size" binding:"required"`
+	ContentHash string `json:"content_hash" binding:"required"`
+	Provider    string `json:"provider" binding:"required"`
+	URI         string `json:"uri" binding:"required"`
 }
 
 type PreFile struct {

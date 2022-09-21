@@ -5,6 +5,7 @@ import (
 	"github.com/akazwz/fhub/api/auth"
 	"github.com/akazwz/fhub/api/file"
 	"github.com/akazwz/fhub/api/folder"
+	"github.com/akazwz/fhub/api/s3/r2"
 	"github.com/akazwz/fhub/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -47,6 +48,12 @@ func InitRouter() *gin.Engine {
 	{
 		fileGroup.GET("/", file.CreateFile)
 		fileGroup.GET("/:id/uri", file.FindFileURI)
+	}
+
+	s3Group := r.Group("/s3")
+	{
+		s3Group.GET("/r2/buckets", r2.ListBuckets)
+		s3Group.GET("/r2/:key", r2.GetObjectURL)
 	}
 
 	return r

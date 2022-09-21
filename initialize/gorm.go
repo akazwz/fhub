@@ -29,7 +29,7 @@ func MigrateTables() {
 	if err := global.GDB.AutoMigrate(
 		model.User{},
 		model.File{},
-		model.FileURI{},
+		model.Provider{},
 		model.Folder{},
 	); err != nil {
 		log.Fatalln(err)

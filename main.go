@@ -16,6 +16,8 @@ func init() {
 	initialize.InitGormDB()
 	// 迁移表
 	initialize.MigrateTables()
+
+	initialize.InitR2Client()
 }
 
 func main() {

@@ -31,7 +31,6 @@ func CreateFile(c *gin.Context) {
 		Name:        f.Name,
 		Size:        f.Size,
 	}
-
 	// 查找 provider
 	provider, err := fileService.FindProviderByContentHash(f.ContentHash)
 	// hash 匹配直接创建文件

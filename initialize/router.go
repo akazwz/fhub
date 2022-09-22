@@ -47,7 +47,7 @@ func InitRouter() *gin.Engine {
 
 	fileGroup := r.Group("/files").Use(middleware.JWTAuth())
 	{
-		fileGroup.GET("/", file.CreateFile)
+		fileGroup.POST("", file.CreateFile)
 	}
 
 	s3Group := r.Group("/s3")

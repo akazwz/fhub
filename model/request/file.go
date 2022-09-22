@@ -18,7 +18,7 @@ type CreateFile struct {
 }
 
 type PartInfo struct {
-	PartNumber int32 `json:"part_number"`
+	PartNumber int32 `json:"part_number" form:"part_number"`
 }
 
 type PreFile struct {

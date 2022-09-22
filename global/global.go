@@ -6,6 +6,7 @@ import (
 )
 
 var (
-	GDB      *gorm.DB
-	R2Client *s3.Client
+	GDB          *gorm.DB
+	R2Client     *s3.Client
+	WasabiClient *s3.Client
 )

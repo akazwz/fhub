@@ -21,6 +21,8 @@ func init() {
 
 	initialize.InitR2Client()
 
+	initialize.InitWasabiClient()
+
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn:              os.Getenv("SENTRY_DSN"),
 		TracesSampleRate: 1.0,

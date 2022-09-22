@@ -18,7 +18,7 @@ type File struct {
 	FileExtension string `json:"file_extension"`
 	MimeType      string `json:"mime_type"`
 	Name          string `json:"name"`
-	Size          int64  `json:"size"`
+	Size          uint64 `json:"size"`
 	Starred       bool   `json:"starred"`
 	Thumbnail     string `json:"thumbnail"`
 }

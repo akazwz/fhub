@@ -29,13 +29,13 @@ func (s *FileService) FindFileByUIDAndID(uid, id string) (model.File, error) {
 	return file, err
 }
 
-func (s *FileService) FindURIByHash(hash string) (string, error) {
+func (s *FileService) FindProviderByContentHash(hash string) (*model.Provider, error) {
 	provider := model.Provider{ContentHash: hash}
-	err := provider.FindURIByHash(global.GDB)
+	err := provider.FindProviderByContentHash(global.GDB)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return provider.URI, nil
+	return &provider, nil
 }
 
 func (s *FileService) FindFilesByKeywords(uid string, parents []string, keywords string) ([]model.File, error) {

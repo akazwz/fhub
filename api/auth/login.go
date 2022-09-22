@@ -6,6 +6,7 @@ import (
 	"github.com/akazwz/fhub/model/response"
 	"github.com/akazwz/fhub/service"
 	"github.com/akazwz/fhub/utils"
+	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +17,7 @@ func LoginByUsernamePwd(c *gin.Context) {
 	login := request.Login{}
 	err := c.ShouldBind(&login)
 	if err != nil {
+		sentry.CaptureException(err)
 		response.BadRequest(400, nil, "参数错误", c)
 		return
 	}
@@ -27,6 +29,7 @@ func LoginByUsernamePwd(c *gin.Context) {
 	// 登录
 	userInstance, err := authService.LoginService(user)
 	if err != nil {
+		sentry.CaptureException(err)
 		response.BadRequest(400, nil, err.Error(), c)
 		return
 	}

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"github.com/getsentry/sentry-go"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/akazwz/fhub/initialize"
 	"github.com/joho/godotenv"
@@ -18,6 +20,15 @@ func init() {
 	initialize.MigrateTables()
 
 	initialize.InitR2Client()
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:              os.Getenv("SENTRY_DSN"),
+		TracesSampleRate: 1.0,
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+	defer sentry.Flush(2 * time.Second)
 }
 
 func main() {

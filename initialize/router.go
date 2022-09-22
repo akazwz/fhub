@@ -54,6 +54,7 @@ func InitRouter() *gin.Engine {
 	{
 		s3Group.GET("/r2/buckets", r2.ListBuckets)
 		s3Group.GET("/r2/:key", r2.GetObjectURL)
+		s3Group.GET("/r2/:key/upload", r2.GetUploadURL)
 	}
 
 	return r

@@ -2,6 +2,8 @@ package file
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/akazwz/fhub/model"
 	"github.com/akazwz/fhub/model/request"
 	"github.com/akazwz/fhub/model/response"
@@ -9,7 +11,6 @@ import (
 	"github.com/akazwz/fhub/utils"
 	"github.com/akazwz/fhub/utils/s3/wasabi"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 var fileService = service.FileService{}
@@ -103,9 +104,16 @@ func CompleteMultipartUpload(c *gin.Context) {
 	}
 	category := utils.GetCategoryByName(name)
 
-	_, err = fileService.FindFileByUIDParentIdAndName(uid, parentId, name)
-	if err == nil {
-		name = fmt.Sprintf("%s-%s", name, time.Now())
+	fileByName, err := fileService.FindFileByUIDParentIdAndName(uid, parentId, name)
+	// 文件名存在
+	if fileByName.Name == name {
+		ext := utils.GetExtByName(name)
+		name = utils.GetPureNameByName(name)
+		if len(ext) > 0 {
+			name = fmt.Sprintf("%s-%s.%s", name, time.Now().Format("2006-01-02 15:04:05"), ext)
+		} else {
+			name = fmt.Sprintf("%s-%s", name, time.Now().Format("2006-01-02 15:04:05"))
+		}
 	}
 	// 文件
 	file := model.File{

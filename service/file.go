@@ -8,7 +8,7 @@ import (
 
 type FileService struct{}
 
-func (s *FileService) CreateFile(file model.File, provider model.Provider) error {
+func (s *FileService) CreateFileAndProvider(file model.File, provider model.Provider) error {
 	// transaction
 	err := global.GDB.Transaction(func(tx *gorm.DB) error {
 		// 创建文件
@@ -29,6 +29,11 @@ func (s *FileService) FindFileByUIDAndID(uid, id string) (model.File, error) {
 	return file, err
 }
 
+func (s *FileService) FindFileByUIDParentIdAndName(uid, parentId, name string) (model.File, error) {
+	file, err := model.FindFileByUIDParentIdAndName(global.GDB, uid, parentId, name)
+	return file, err
+}
+
 func (s *FileService) FindProviderByContentHash(hash string) (*model.Provider, error) {
 	provider := model.Provider{ContentHash: hash}
 	err := provider.FindProviderByContentHash(global.GDB)
@@ -44,4 +49,8 @@ func (s *FileService) FindFilesByKeywords(uid string, parents []string, keywords
 		return nil, err
 	}
 	return files, err
+}
+
+func (s *FileService) DeleteFileByUIDAndID(uid, id string) error {
+	return model.DeleteFileByUIDAndId(global.GDB, uid, id)
 }

@@ -48,6 +48,9 @@ func InitRouter() *gin.Engine {
 	fileGroup := r.Group("/files").Use(middleware.JWTAuth())
 	{
 		fileGroup.POST("", file.CreateFile)
+		fileGroup.DELETE("/:id", file.DeleteFileByID)
+		fileGroup.POST("/complete", file.CompleteMultipartUpload)
+		fileGroup.GET("/list", file.ListMultipartUpload)
 	}
 
 	s3Group := r.Group("/s3")

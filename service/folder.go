@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+	"github.com/akazwz/fhub/utils/s3/wasabi"
 	"sort"
 
 	"github.com/akazwz/fhub/global"
@@ -26,10 +28,23 @@ func (s *FolderService) RenameFolder(folder model.Folder) error {
 
 func (s *FolderService) FindFilesByParentID(uid, parentID string) ([]model.File, error) {
 	files, err := model.FindFilesByParentID(global.GDB, uid, parentID)
+	filesWithURL := make([]model.File, 0)
+	for _, file := range files {
+		provider := model.Provider{ContentHash: file.ContentHash}
+		err := provider.FindProviderByContentHash(global.GDB)
+		if err != nil {
+			return nil, err
+		}
+		contentDisposition := fmt.Sprintf("attachment; filename=%s", file.Name)
+		object, err := wasabi.GetPresignGetObjectURL(provider.Key, contentDisposition)
+		file.URL = object.URL
+		filesWithURL = append(filesWithURL, file)
+	}
+
 	if err != nil {
 		return nil, err
 	}
-	return files, err
+	return filesWithURL, err
 }
 
 func (s *FolderService) FindFoldersByParentID(uid, parentID string) ([]model.Folder, error) {

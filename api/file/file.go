@@ -1,6 +1,7 @@
 package file
 
 import (
+	"fmt"
 	"github.com/akazwz/fhub/model"
 	"github.com/akazwz/fhub/model/request"
 	"github.com/akazwz/fhub/model/response"
@@ -8,6 +9,7 @@ import (
 	"github.com/akazwz/fhub/utils"
 	"github.com/akazwz/fhub/utils/s3/wasabi"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 var fileService = service.FileService{}
@@ -24,18 +26,33 @@ func CreateFile(c *gin.Context) {
 		return
 	}
 
+	category := utils.GetCategoryByName(f.Name)
+	name := f.Name
+	fileByName, err := fileService.FindFileByUIDParentIdAndName(uid, f.ParentID, f.Name)
+	// 文件名存在
+	if fileByName.Name == f.Name {
+		ext := utils.GetExtByName(name)
+		name = utils.GetPureNameByName(name)
+		if len(ext) > 0 {
+			name = fmt.Sprintf("%s-%s.%s", name, time.Now().Format("2006-01-02 15:04:05"), ext)
+		} else {
+			name = fmt.Sprintf("%s-%s", name, time.Now().Format("2006-01-02 15:04:05"))
+		}
+	}
+
 	file := model.File{
 		ContentHash: f.ContentHash,
 		UID:         uid,
 		ParentID:    f.ParentID,
-		Name:        f.Name,
+		Name:        name,
 		Size:        f.Size,
+		Category:    category,
 	}
 	// 查找 provider
 	provider, err := fileService.FindProviderByContentHash(f.ContentHash)
 	// hash 匹配直接创建文件
 	if err == nil {
-		err := fileService.CreateFile(file, *provider)
+		err := fileService.CreateFileAndProvider(file, *provider)
 		if err != nil {
 			response.BadRequest(400, nil, err.Error(), c)
 			return
@@ -59,6 +76,83 @@ func CreateFile(c *gin.Context) {
 		"upload_id":       upload,
 		"upload_url_list": uploadPartUrlList,
 	}, "success", c)
+}
+
+func CompleteMultipartUpload(c *gin.Context) {
+	uidAny, _ := c.Get("uid")
+	uid := uidAny.(string)
+
+	var complete request.CompleteMultipartUpload
+	err := c.ShouldBind(&complete)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+
+	name := complete.Name
+	size := complete.Size
+	key := complete.Key
+	uploadId := complete.UploadId
+	contentHash := complete.ContentHash
+	parentId := complete.ParentId
+
+	_, err = wasabi.CompleteUpload(key, uploadId, contentHash)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	category := utils.GetCategoryByName(name)
+
+	_, err = fileService.FindFileByUIDParentIdAndName(uid, parentId, name)
+	if err == nil {
+		name = fmt.Sprintf("%s-%s", name, time.Now())
+	}
+	// 文件
+	file := model.File{
+		ContentHash: contentHash,
+		UID:         uid,
+		ParentID:    parentId,
+		Name:        name,
+		Size:        size,
+		Category:    category,
+	}
+	// provider  wasabi
+	provider := model.Provider{
+		ContentHash: contentHash,
+		Provider:    "wasabi",
+		Key:         key,
+	}
+
+	err = fileService.CreateFileAndProvider(file, provider)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	response.Ok(200, file, "success", c)
+}
+
+func DeleteFileByID(c *gin.Context) {
+	uidAny, _ := c.Get("uid")
+	uid := uidAny.(string)
+
+	id := c.Param("id")
+	err := fileService.DeleteFileByUIDAndID(uid, id)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	response.Ok(200, nil, "success", c)
+}
+
+func ListMultipartUpload(c *gin.Context) {
+	key := c.Query("key")
+	uploadId := c.Query("upload_id")
+	output, err := wasabi.FindUploadPart(key, uploadId)
+	if err != nil {
+		response.BadRequest(400, nil, err.Error(), c)
+		return
+	}
+	response.Ok(200, output, "success", c)
 }
 
 func GetPathByParentID() {

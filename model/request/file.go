@@ -17,6 +17,16 @@ type CreateFile struct {
 	PartInfoList []PartInfo `json:"part_info_list"`
 }
 
+type CompleteMultipartUpload struct {
+	Name        string `json:"name"`
+	Size        uint64 `json:"size"`
+	Key         string `json:"key"`
+	UploadId    string `json:"upload_id"`
+	ContentHash string `json:"content_hash"`
+	ParentId    string `json:"parent_id"`
+	PartCount   int32  `json:"part_count"`
+}
+
 type PartInfo struct {
 	PartNumber int32 `json:"part_number" form:"part_number"`
 }

@@ -21,6 +21,8 @@ type File struct {
 	Size          uint64 `json:"size"`
 	Starred       bool   `json:"starred"`
 	Thumbnail     string `json:"thumbnail"`
+
+	URL string `json:"url" gorm:"-"`
 }
 
 func (file *File) TableName() string {
@@ -50,9 +52,20 @@ func FindFileByUIDAndID(db *gorm.DB, uid, id string) (File, error) {
 	return file, err
 }
 
+// FindFileByUIDParentIdAndName 通过 uid 和 parentId name 查找文件
+func FindFileByUIDParentIdAndName(db *gorm.DB, uid, parentId, name string) (File, error) {
+	var file File
+	err := db.Where("uid = ? AND parent_id = ? AND name = ?", uid, parentId, name).Find(&file).Error
+	return file, err
+}
+
 // Rename 重命名文件
 func (file *File) Rename(db *gorm.DB, newName string) error {
 	return db.Model(&file).UpdateColumn("name", newName).Error
+}
+
+func DeleteFileByUIDAndId(db *gorm.DB, uid, id string) error {
+	return db.Delete(&File{}, "uid = ? AND id = ?", uid, id).Error
 }
 
 // FindFilesByKeywords 通过关键词搜索文件

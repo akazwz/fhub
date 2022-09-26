@@ -18,7 +18,30 @@ func (authService *AuthService) SignupService(u model.User) (*model.User, error)
 		return user, errors.New("用户名已注册")
 	}
 	u.Password = utils.BcryptHash(u.Password)
-	err := global.GDB.Create(&u).Error
+
+	err := global.GDB.Transaction(func(tx *gorm.DB) error {
+		// 创建用户
+		err := global.GDB.Create(&u).Error
+		if err != nil {
+			return err
+		}
+		// 创建容量
+		capacity := model.Capacity{
+			UID:   u.ID,
+			Total: 10 * 1024 * 1024 * 1024,
+			Used:  0,
+			Album: 0,
+			Video: 0,
+		}
+		err = capacity.Create(tx)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &u, err
 }
 
@@ -50,4 +73,13 @@ func (authService *AuthService) FindUserByID(id string) *model.User {
 		return nil
 	}
 	return &user
+}
+
+func (authService *AuthService) FindCapacityByUID(uid string) *model.Capacity {
+	var cap model.Capacity
+	err := global.GDB.Where("uid = ?", uid).First(&cap).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil
+	}
+	return &cap
 }

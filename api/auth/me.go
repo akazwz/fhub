@@ -18,7 +18,14 @@ func Me(c *gin.Context) {
 		response.BadRequest(400, nil, "账户不存在", c)
 		return
 	}
+	capacity := authService.FindCapacityByUID(user.ID)
+	/* 用户不存在 */
+	if capacity == nil {
+		response.BadRequest(400, nil, "账户容量不存在", c)
+		return
+	}
 	response.Ok(400, gin.H{
-		"user": user,
+		"user":     user,
+		"capacity": capacity,
 	}, "success", c)
 }

@@ -31,6 +31,7 @@ func MigrateTables() {
 		model.File{},
 		model.Provider{},
 		model.Folder{},
+		model.Capacity{},
 	); err != nil {
 		log.Fatalln(err)
 	}

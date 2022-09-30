@@ -2,14 +2,15 @@ package file
 
 import (
 	"fmt"
+	"os"
 	"time"
 
+	"github.com/akazwz/fhub/global"
 	"github.com/akazwz/fhub/model"
 	"github.com/akazwz/fhub/model/request"
 	"github.com/akazwz/fhub/model/response"
 	"github.com/akazwz/fhub/service"
 	"github.com/akazwz/fhub/utils"
-	"github.com/akazwz/fhub/utils/s3/wasabi"
 	"github.com/gin-gonic/gin"
 )
 
@@ -63,13 +64,16 @@ func CreateFile(c *gin.Context) {
 	}
 
 	// hash 不匹配, 返回 multipart upload url
+	client := global.WasabiClient
+	bucket := os.Getenv("WASABI_BUCKET_NAME")
 	key := utils.GenerateID(32)
-	upload := wasabi.CreateMultipartUpload(key)
+
+	upload := utils.S3Storage.CreateMultipartUpload(client, bucket, key)
 	uploadId := upload.UploadId
 	uploadPartUrlList := make(map[int32]interface{}, 0)
 
 	for _, part := range f.PartInfoList {
-		uploadPart := wasabi.CreatePresignUploadPart(*uploadId, key, part.PartNumber)
+		uploadPart := utils.S3Storage.CreatePresignUploadPart(client, bucket, key, *uploadId, part.PartNumber)
 		uploadPartUrlList[part.PartNumber] = uploadPart.URL
 	}
 
@@ -97,7 +101,10 @@ func CompleteMultipartUpload(c *gin.Context) {
 	contentHash := complete.ContentHash
 	parentId := complete.ParentId
 
-	_, err = wasabi.CompleteUpload(key, uploadId, contentHash)
+	client := global.WasabiClient
+	bucket := os.Getenv("WASABI_BUCKET_NAME")
+
+	_, err = utils.S3Storage.CompleteUpload(client, bucket, key, uploadId, contentHash)
 	if err != nil {
 		response.BadRequest(400, nil, err.Error(), c)
 		return
@@ -155,7 +162,9 @@ func DeleteFileByID(c *gin.Context) {
 func ListMultipartUpload(c *gin.Context) {
 	key := c.Query("key")
 	uploadId := c.Query("upload_id")
-	output, err := wasabi.FindUploadPart(key, uploadId)
+	client := global.R2Client
+	bucket := os.Getenv("r2_bucket_name")
+	output, err := utils.S3Storage.FindUploadPart(client, bucket, key, uploadId)
 	if err != nil {
 		response.BadRequest(400, nil, err.Error(), c)
 		return

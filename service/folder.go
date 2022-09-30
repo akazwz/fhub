@@ -2,7 +2,8 @@ package service
 
 import (
 	"fmt"
-	"github.com/akazwz/fhub/utils/s3/wasabi"
+	"github.com/akazwz/fhub/utils"
+	"os"
 	"sort"
 
 	"github.com/akazwz/fhub/global"
@@ -35,8 +36,12 @@ func (s *FolderService) FindFilesByParentID(uid, parentID string) ([]model.File,
 		if err != nil {
 			return nil, err
 		}
+
+		client := global.WasabiClient
+		bucket := os.Getenv("WASABI_BUCKET_NAME")
+
 		contentDisposition := fmt.Sprintf("attachment; filename=%s", file.Name)
-		object, err := wasabi.GetPresignGetObjectURL(provider.Key, contentDisposition)
+		object, err := utils.S3Storage.GetPresignGetObjectURL(client, bucket, provider.Key, contentDisposition)
 		file.URL = object.URL
 		filesWithURL = append(filesWithURL, file)
 	}

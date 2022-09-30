@@ -26,14 +26,14 @@ func InitWasabiClient() {
 }
 
 func generateWasabiClient(accessKeyId, accessKeySecret string) (*s3.Client, error) {
-	r2Resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+	resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		return aws.Endpoint{
-			URL: fmt.Sprintf("https://s3.ap-southeast-1.wasabisys.com"),
+			URL: fmt.Sprintf("https://s3.eu-west-2.wasabisys.com"),
 		}, nil
 	})
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithEndpointResolverWithOptions(r2Resolver),
+		config.WithEndpointResolverWithOptions(resolver),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyId, accessKeySecret, "")),
 	)
 	if err != nil {

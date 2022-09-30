@@ -41,5 +41,5 @@ func (c *Capacity) AddUsed(db *gorm.DB, size int64) error {
 	if c.Used+size > c.Total {
 		return errors.New("capacity not enough")
 	}
-	return db.Where("uid = ?", c.UID).UpdateColumn("used", c.Used+size).Error
+	return db.Model(&Capacity{}).Where("uid = ?", c.UID).UpdateColumn("used", c.Used+size).Error
 }

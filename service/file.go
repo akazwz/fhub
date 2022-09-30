@@ -18,7 +18,14 @@ func (s *FileService) CreateFileAndProvider(file model.File, provider model.Prov
 		}
 		// 创建provider
 		err = provider.Create(tx)
-		// TODO 更新用户空间
+		// 更新用户空间
+		capacity := &model.Capacity{
+			UID: file.UID,
+		}
+		err = capacity.AddUsed(tx, int64(file.Size))
+		if err != nil {
+			return err
+		}
 		return err
 	})
 	return err

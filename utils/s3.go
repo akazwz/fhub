@@ -2,6 +2,8 @@ package utils
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"log"
 	"time"
 
@@ -14,6 +16,24 @@ import (
 var S3Storage = s3Util{}
 
 type s3Util struct{}
+
+var ctx = context.TODO()
+
+func (s3Util s3Util) NewS3Client(key, secret, url string) (*s3.Client, error) {
+	credentialsOptions := config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(key, secret, ""))
+	customResolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+		return aws.Endpoint{
+			URL: url,
+		}, nil
+	})
+	endPointOptions := config.WithEndpointResolverWithOptions(customResolver)
+	cfg, err := config.LoadDefaultConfig(ctx, credentialsOptions, endPointOptions)
+	if err != nil {
+		return nil, err
+	}
+	client := s3.NewFromConfig(cfg)
+	return client, nil
+}
 
 func (s3Util s3Util) CreateMultipartUpload(client *s3.Client, bucket, key string) *s3.CreateMultipartUploadOutput {
 	upload, err := client.CreateMultipartUpload(context.TODO(), &s3.CreateMultipartUploadInput{
@@ -63,13 +83,15 @@ func (s3Util s3Util) GetPresignGetObjectURL(client *s3.Client, bucket, key, cont
 func (s3Util s3Util) CompleteUpload(client *s3.Client, bucket, key, uploadId, contentHash string) (*s3.CompleteMultipartUploadOutput, error) {
 	parts := make([]types.CompletedPart, 0)
 
-	listMultipartUploads, err := client.ListParts(context.TODO(), &s3.ListPartsInput{
+	listParts, err := client.ListParts(ctx, &s3.ListPartsInput{
 		Bucket:   aws.String(bucket),
 		Key:      aws.String(key),
 		UploadId: aws.String(uploadId),
 	})
-
-	for _, part := range listMultipartUploads.Parts {
+	if err != nil {
+		return nil, err
+	}
+	for _, part := range listParts.Parts {
 		parts = append(parts, types.CompletedPart{
 			ChecksumCRC32:  part.ChecksumCRC32,
 			ChecksumCRC32C: part.ChecksumCRC32C,
@@ -81,16 +103,16 @@ func (s3Util s3Util) CompleteUpload(client *s3.Client, bucket, key, uploadId, co
 	}
 
 	complete, err := client.CompleteMultipartUpload(context.TODO(), &s3.CompleteMultipartUploadInput{
-		Bucket:         aws.String(bucket),
-		Key:            aws.String(key),
-		UploadId:       aws.String(uploadId),
-		ChecksumSHA256: aws.String(contentHash),
+		Bucket:   aws.String(bucket),
+		Key:      aws.String(key),
+		UploadId: aws.String(uploadId),
 		MultipartUpload: &types.CompletedMultipartUpload{
 			Parts: parts,
 		},
 	})
 
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 	return complete, nil

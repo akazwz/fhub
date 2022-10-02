@@ -19,8 +19,6 @@ func init() {
 	// 迁移表
 	initialize.MigrateTables()
 
-	initialize.InitR2Client()
-
 	initialize.InitWasabiClient()
 
 	err := sentry.Init(sentry.ClientOptions{

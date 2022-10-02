@@ -64,8 +64,12 @@ func CreateFile(c *gin.Context) {
 	}
 
 	// hash 不匹配, 返回 multipart upload url
-	client := global.WasabiClient
-	bucket := os.Getenv("WASABI_BUCKET_NAME")
+	accessKey := os.Getenv("AK")
+	accessSecret := os.Getenv("SK")
+	url := os.Getenv("QINIU_URL")
+	client, err := utils.S3Storage.NewS3Client(accessKey, accessSecret, url)
+	bucket := "fhub"
+
 	key := utils.GenerateID(32)
 
 	upload := utils.S3Storage.CreateMultipartUpload(client, bucket, key)
@@ -101,8 +105,11 @@ func CompleteMultipartUpload(c *gin.Context) {
 	contentHash := complete.ContentHash
 	parentId := complete.ParentId
 
-	client := global.WasabiClient
-	bucket := os.Getenv("WASABI_BUCKET_NAME")
+	accessKey := os.Getenv("AK")
+	accessSecret := os.Getenv("SK")
+	url := os.Getenv("QINIU_URL")
+	client, err := utils.S3Storage.NewS3Client(accessKey, accessSecret, url)
+	bucket := "fhub"
 
 	_, err = utils.S3Storage.CompleteUpload(client, bucket, key, uploadId, contentHash)
 	if err != nil {
@@ -163,7 +170,7 @@ func ListMultipartUpload(c *gin.Context) {
 	key := c.Query("key")
 	uploadId := c.Query("upload_id")
 	client := global.R2Client
-	bucket := os.Getenv("r2_bucket_name")
+	bucket := os.Getenv("R2_BUCKET_NAME")
 	output, err := utils.S3Storage.FindUploadPart(client, bucket, key, uploadId)
 	if err != nil {
 		response.BadRequest(400, nil, err.Error(), c)

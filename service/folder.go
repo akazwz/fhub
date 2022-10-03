@@ -2,12 +2,12 @@ package service
 
 import (
 	"fmt"
-	"github.com/akazwz/fhub/utils"
 	"os"
 	"sort"
 
 	"github.com/akazwz/fhub/global"
 	"github.com/akazwz/fhub/model"
+	"github.com/akazwz/fhub/utils"
 )
 
 type FolderService struct{}
@@ -37,8 +37,11 @@ func (s *FolderService) FindFilesByParentID(uid, parentID string) ([]model.File,
 			return nil, err
 		}
 
-		client := global.WasabiClient
-		bucket := os.Getenv("WASABI_BUCKET_NAME")
+		accessKey := os.Getenv("AK")
+		accessSecret := os.Getenv("SK")
+		url := os.Getenv("QINIU_URL")
+		client, err := utils.S3Storage.NewS3Client(accessKey, accessSecret, url)
+		bucket := "fhub"
 
 		contentDisposition := fmt.Sprintf("attachment; filename=%s", file.Name)
 		object, err := utils.S3Storage.GetPresignGetObjectURL(client, bucket, provider.Key, contentDisposition)
